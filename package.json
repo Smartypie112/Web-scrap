@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "start": "node script.js",
+  "postinstall": "playwright install --with-deps chromium"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -13,7 +14,7 @@
   "dependencies": {
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "playwright": "^1.58.2",
+    "playwright": "^1.61.1",
     "playwright-extra": "^4.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2"
   }
