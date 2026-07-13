@@ -1,28 +1,66 @@
+require('dotenv').config();
 const { chromium } = require('playwright');
 
 (async () => {
   const browser = await chromium.launch({
-    headless: false
+    headless: true, // Use false only when testing locally
   });
 
   const page = await browser.newPage();
 
-  await page.goto('https://www.instagram.com/');
+  // Open Instagram login page
+  await page.goto('https://www.instagram.com/accounts/login/', {
+    waitUntil: 'networkidle',
+  });
 
-  // Log in manually the first time or automate login.
+  // Accept cookies if the button appears
+  try {
+    await page.getByRole('button', { name: /allow all cookies|accept all/i }).click({
+      timeout: 5000,
+    });
+  } catch {}
 
-  await page.goto('https://www.instagram.com/exampleuser/');
+  // Fill login form
+  await page.locator('input[name="username"]').fill(process.env.INSTAGRAM_USERNAME);
+  await page.locator('input[name="password"]').fill(process.env.INSTAGRAM_PASSWORD);
 
-  // Click the "About this account" button
-  await page.getByText('About this account').click();
+  // Click Log in
+  await page.getByRole('button', { name: /log in/i }).click();
 
-  const text = await page.locator('body').innerText();
+  // Wait for login to complete
+  await page.waitForURL(/instagram\.com/, {
+    timeout: 30000,
+  });
 
-  const match = text.match(/Account based in\s+(.+)/);
+  console.log("Logged in successfully!");
 
-  if (match) {
-    console.log(match[1]);
-  }
+  // Visit a profile
+  await page.goto('https://www.instagram.com/code.candyy/', {
+    waitUntil: 'networkidle',
+  });
+
+// Go to profile
+await page.goto('https://www.instagram.com/code.candyy/', {
+  waitUntil: 'networkidle',
+});
+
+// Click the username in the profile header
+await page.locator('header').getByText('code.candyy', { exact: true }).click();
+
+// Wait for the menu
+await page.waitForSelector('text=About this account');
+
+// Open About this account
+await page.getByText('About this account').click();
+
+// Wait for dialog
+await page.waitForSelector('text=Account based in');
+
+const country = await page.locator(
+  'span:has-text("Account based in") + span'
+).textContent();
+
+console.log(country?.trim());
 
   await browser.close();
 })();
