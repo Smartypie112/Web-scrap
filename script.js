@@ -21,7 +21,7 @@ const { chromium } = require('playwright');
   } catch {}
 
   // Fill login form
-  await page.locator('input[name="username"]').fill("konbola57");
+  await page.locator('input[aria-label="Username, email address or mobile number"]').fill("konbola57");
   await page.locator('input[name="password"]').fill("8789522186a");
 
   // Click Log in
