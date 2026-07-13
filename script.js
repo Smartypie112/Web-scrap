@@ -21,8 +21,8 @@ const { chromium } = require('playwright');
   } catch {}
 
   // Fill login form
-  await page.locator('input[name="username"]').fill(process.env.INSTAGRAM_USERNAME);
-  await page.locator('input[name="password"]').fill(process.env.INSTAGRAM_PASSWORD);
+  await page.locator('input[name="username"]').fill("konbola57");
+  await page.locator('input[name="password"]').fill("8789522186a");
 
   // Click Log in
   await page.getByRole('button', { name: /log in/i }).click();
