@@ -1,3 +1,4 @@
+const fs = require("fs");
 require('dotenv').config();
 const { chromium } = require('playwright');
 
@@ -10,10 +11,22 @@ const { chromium } = require('playwright');
 
   // Open Instagram login page
   await page.goto('https://www.instagram.com/accounts/login/', {
-    waitUntil: 'networkidle',
+    waitUntil: 'domcontentloaded',
+  });
+console.log("Current URL:", page.url());
+  console.log("Title:", await page.title());
+
+  // Save screenshot
+  await page.screenshot({
+    path: "login-page.png",
+    fullPage: true,
   });
 
-  // Accept cookies if the button appears
+  // Save HTML
+  fs.writeFileSync("login-page.html", await page.content());
+
+  console.log("Saved screenshot and HTML.");
+/*  // Accept cookies if the button appears
   try {
     await page.getByRole('button', { name: /allow all cookies|accept all/i }).click({
       timeout: 5000,
@@ -60,7 +73,7 @@ const country = await page.locator(
   'span:has-text("Account based in") + span'
 ).textContent();
 
-console.log(country?.trim());
+console.log(country?.trim());*/
 
   await browser.close();
 })();
