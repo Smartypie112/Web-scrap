@@ -31,13 +31,10 @@ page.on("requestfailed", req =>
   console.log("FAILED:", req.url(), req.failure()?.errorText)
 );
 
-const response = await page.goto(
-  "https://www.instagram.com/accounts/login/",
-  {
-    waitUntil: "load",
-    timeout: 60000,
-  }
-);
+const response = await page.goto("https://example.com", {
+  waitUntil: "load",
+  timeout: 60000,
+});
 
 console.log("Status:", response?.status());
 console.log("Final URL:", page.url());
