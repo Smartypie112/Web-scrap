@@ -32,7 +32,7 @@ page.on("requestfailed", req =>
 );
 
 const response = await page.goto(
-  "https://example.com",
+  "https://www.instagram.com/accounts/login/",
   {
     waitUntil: "load",
     timeout: 60000,
