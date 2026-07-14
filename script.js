@@ -4,12 +4,32 @@ const { chromium } = require('playwright');
 
 (async () => {
   const browser = await chromium.launch({
-    headless: true, // Use false only when testing locally
-  });
+  headless: true,
+  args: [
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--disable-dev-shm-usage"
+  ]
+});
 
-  const page = await browser.newPage();
+  const context = await browser.newContext({
+  userAgent:
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36",
+  viewport: { width: 1366, height: 768 },
+});
+
+const page = await context.newPage();
+
+const html = await page.content();
+console.log(html);
 
 console.log("Opening page...");
+
+page.on("console", msg => console.log("PAGE:", msg.text()));
+page.on("pageerror", err => console.log("PAGE ERROR:", err));
+page.on("requestfailed", req =>
+  console.log("FAILED:", req.url(), req.failure()?.errorText)
+);
 
 const response = await page.goto(
   "https://www.instagram.com/accounts/login/",
