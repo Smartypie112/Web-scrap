@@ -9,21 +9,30 @@ const { chromium } = require('playwright');
 
   const page = await browser.newPage();
 
-  // Open Instagram login page
-  await page.goto('https://www.instagram.com/accounts/login/', {
-    waitUntil: 'domcontentloaded',
-  });
-console.log("Current URL:", page.url());
-  console.log("Title:", await page.title());
+console.log("Opening page...");
 
-  // Save screenshot
-  await page.screenshot({
-    path: "login-page.png",
-    fullPage: true,
-  });
+const response = await page.goto(
+  "https://www.instagram.com/accounts/login/",
+  {
+    waitUntil: "load",
+    timeout: 60000,
+  }
+);
 
-  // Save HTML
-  fs.writeFileSync("login-page.html", await page.content());
+console.log("Status:", response?.status());
+console.log("Final URL:", page.url());
+console.log("Title:", await page.title());
+
+await page.waitForTimeout(5000);
+
+console.log("Body length:", (await page.content()).length);
+
+await page.screenshot({
+  path: "login-page.png",
+  fullPage: true,
+});
+
+fs.writeFileSync("login-page.html", await page.content());
 
   console.log("Saved screenshot and HTML.");
 /*  // Accept cookies if the button appears
