@@ -31,10 +31,13 @@ page.on("requestfailed", req =>
   console.log("FAILED:", req.url(), req.failure()?.errorText)
 );
 
-const response = await page.goto("https://example.com", {
-  waitUntil: "load",
-  timeout: 60000,
-});
+const response = await page.goto(
+  "https://www.instagram.com/accounts/login/",
+  {
+    waitUntil: "load",
+    timeout: 60000,
+  }
+);
 
 console.log("Status:", response?.status());
 console.log("Final URL:", page.url());
@@ -52,6 +55,36 @@ await page.screenshot({
 fs.writeFileSync("login-page.html", await page.content());
 
   console.log("Saved screenshot and HTML.");
+  
+  // Wait for the login form
+await page.waitForSelector('input[name="username"]', { timeout: 30000 });
+
+// Fill username/email
+await page.fill(
+  'input[name="email"]', "konbola57"
+);
+
+// Fill password
+await page.fill(
+  'input[name="pass"]',"8789522186a"
+);
+
+// Click Log in
+await page.click('button[type="submit"]');
+
+// Wait a few seconds to allow the login process
+await page.waitForTimeout(10000);
+
+console.log("Current URL:", page.url());
+
+// Save a screenshot after login
+await page.screenshot({
+  path: "after-login.png",
+  fullPage: true,
+});
+
+fs.writeFileSync("after-login.html", await page.content());
+  
 /*  // Accept cookies if the button appears
   try {
     await page.getByRole('button', { name: /allow all cookies|accept all/i }).click({
